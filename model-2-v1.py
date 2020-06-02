@@ -52,7 +52,9 @@ def get_batch(all_entries, n):
 		labels = np.array(list(map(lambda e: label_to_number(e.label), entries)))
 
 		t_inputs = torch.from_numpy(inputs)
+		t_inputs = t_inputs.float()
 		t_labels = torch.from_numpy(labels)
+		t_labels = t_labels.long()
 
 		all_inputs.append(t_inputs)
 		all_labels.append(t_labels)
@@ -77,7 +79,7 @@ class Net(nn.Module):
 def train_model(entries):
 
 	net = Net()
-	net = net.double()
+	net = net.float()
 
 	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.Adam(net.parameters(), lr=learning_rate)	
