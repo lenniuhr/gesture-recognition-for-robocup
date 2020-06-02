@@ -20,7 +20,6 @@ H_CENTER = 9
 
 def get_body_angles(entry):
 	body = entry.body
-	neck = winkel(body[HEAD] - body[NECK], body[PELVIS] - body[NECK])
 	shoulderR = winkel(body[NECK] - body[SHOULDER_R], body[ELLBOW_R] - body[SHOULDER_R])
 	shoulderL = winkel(body[NECK] - body[SHOULDER_L], body[ELLBOW_L] - body[SHOULDER_L])
 	ellbowR = winkel(body[SHOULDER_R] - body[ELLBOW_R], body[HAND_R] - body[ELLBOW_R])
@@ -28,77 +27,22 @@ def get_body_angles(entry):
 	return np.array([shoulderR, shoulderL, ellbowR, ellbowL]) / 180
 
 def get_bounding_box(entry):
+
+	# get important positions
 	body = entry.body
-	bodyX = body[:,0]
-	bodyY = body[:,1]
-	#print(body)
-
-	minValX = np.min(bodyX[np.nonzero(bodyX)])
-	maxValX = np.max(bodyX[np.nonzero(bodyX)])
-
-	#print(minValX)
-	#print(maxValX)
-
-	minValY = np.min(bodyY[np.nonzero(bodyY)])
-	maxValY = np.max(bodyY[np.nonzero(bodyY)])
-
-	#print(minValY)
-	#print(maxValY)
-
-	#return minValX, maxValX, minValY, maxValY
-	boundingBoxWidth = maxValX - minValX
-	boundingBoxHeight = maxValY - minValY
-
-	#if(boundingBoxWidth < boundingBoxHeight):
-	#	difference = boundingBoxHeight - boundingBoxWidth
-	#	minValX = minValX - (difference / 2)
-	#	maxValX = maxValX + (difference / 2)
-	#	boundingBoxWidth = maxValX - minValX
-	#elif(boundingBoxHeight < boundingBoxWidth):
-	#	difference = boundingBoxWidth - boundingBoxHeight
-	#	minValY = minValY - (difference / 2)
-	#	maxValY = maxValY + (difference / 2)
-	#	boundingBoxHeight = maxValY - minValY
-
-	#print("Width: " + str(boundingBoxWidth))
-	#print("Height: " + str(boundingBoxHeight))
-
-	ellbowR = [(body[ELLBOW_R][0] - minValX) / boundingBoxWidth, (body[ELLBOW_R][1] - minValY) / boundingBoxHeight]
-	ellbowL = [(body[ELLBOW_L][0] - minValX) / boundingBoxWidth, (body[ELLBOW_L][1] - minValY) / boundingBoxHeight]
-	handR = [(body[HAND_R][0] - minValX) / boundingBoxWidth, (body[HAND_R][1] - minValY) / boundingBoxHeight]
-	handL = [(body[HAND_L][0] - minValX) / boundingBoxWidth, (body[HAND_L][1] - minValY) / boundingBoxHeight]
-	shoulderR = [(body[SHOULDER_R][0] - minValX) / boundingBoxWidth, (body[SHOULDER_R][1] - minValY) / boundingBoxHeight]
-	shoulderL = [(body[SHOULDER_L][0] - minValX) / boundingBoxWidth, (body[SHOULDER_L][1] - minValY) / boundingBoxHeight]
-
-	print("-----")
-	print(ellbowR)
-	print(ellbowL)
-	print(handR)
-	print(handL)
-	print(shoulderR)
-	print(shoulderL)
-
 	x_pos = np.array([body[ELLBOW_R][0], body[ELLBOW_L][0], body[HAND_R][0], body[HAND_L][0], body[SHOULDER_R][0], body[SHOULDER_L][0]])
 	y_pos = np.array([body[ELLBOW_R][1], body[ELLBOW_L][1], body[HAND_R][1], body[HAND_L][1], body[SHOULDER_R][1], body[SHOULDER_L][1]])
 
-
-	print(body[ELLBOW_R])
-	print(body[HAND_L])
-
+	# get bounding box borders
 	minValX = np.min(x_pos[np.nonzero(x_pos)])
 	maxValX = np.max(x_pos[np.nonzero(x_pos)])
-
 	minValY = np.min(y_pos[np.nonzero(y_pos)])
 	maxValY = np.max(y_pos[np.nonzero(y_pos)])
 
 	boundingBoxWidth = maxValX - minValX
 	boundingBoxHeight = maxValY - minValY
 
-	print(minValX)
-	print(maxValX)
-	print(minValY)
-	print(maxValY)
-
+	# calculate position relative to bounding box
 	ellbowR = [(body[ELLBOW_R][0] - minValX) / boundingBoxWidth, (body[ELLBOW_R][1] - minValY) / boundingBoxHeight]
 	ellbowL = [(body[ELLBOW_L][0] - minValX) / boundingBoxWidth, (body[ELLBOW_L][1] - minValY) / boundingBoxHeight]
 	handR = [(body[HAND_R][0] - minValX) / boundingBoxWidth, (body[HAND_R][1] - minValY) / boundingBoxHeight]
@@ -106,25 +50,7 @@ def get_bounding_box(entry):
 	shoulderR = [(body[SHOULDER_R][0] - minValX) / boundingBoxWidth, (body[SHOULDER_R][1] - minValY) / boundingBoxHeight]
 	shoulderL = [(body[SHOULDER_L][0] - minValX) / boundingBoxWidth, (body[SHOULDER_L][1] - minValY) / boundingBoxHeight]
 
-	print("-----")
-	print(ellbowR)
-	print(ellbowL)
-	print(handR)
-	print(handL)
-	print(shoulderR)
-	print(shoulderL)
-
-
-	#sys.exit(-1)
 	return np.array([ellbowR[0], ellbowR[1], ellbowL[0], ellbowL[1], handR[0], handR[1], handL[0], handL[1], shoulderR[0], shoulderR[1], shoulderL[0], shoulderL[1]])
-
-
-def print_body_angles(angles):
-	print("Neck: " + str(angles[0]))
-	print("Shoulder R: " + str(angles[1]))
-	print("Shoulder L: " + str(angles[2]))
-	print("Ellbow R: " + str(angles[3]))
-	print("Ellbow L: " + str(angles[4]))
 
 def import_body(dataset, file_prefixes, labels):
 	for i in range(0, len(file_prefixes)):
@@ -202,14 +128,14 @@ print("---------- START IMPORT BODY ----------")
 
 dataset = "pose-4"
 
-#file_prefixes = ["idle", "clap", "time-out", "cross-arms"] 
-file_prefixes = ["clap"]
+#file_prefixes = ["clap", "spin"] 
+file_prefixes = ["spin"]
 
-import_keypoints(dataset, file_prefixes)
-check_raw_entries(dataset, file_prefixes)
+#import_keypoints(dataset, file_prefixes)
+#check_raw_entries(dataset, file_prefixes)
 
-#import_body(dataset, file_prefixes, file_prefixes)
-#check_body_entries(dataset, file_prefixes)
+import_body(dataset, file_prefixes, file_prefixes)
+check_body_entries(dataset, file_prefixes)
 
 
 
