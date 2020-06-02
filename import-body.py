@@ -128,13 +128,13 @@ print("---------- START IMPORT BODY ----------")
 
 dataset = "pose-4"
 
-#file_prefixes = ["clap", "spin"] 
-file_prefixes = ["spin"]
+file_prefixes = ["clap", "spin"] 
+#file_prefixes = ["spin"]
 
 #import_keypoints(dataset, file_prefixes)
 #check_raw_entries(dataset, file_prefixes)
 
-import_body(dataset, file_prefixes, file_prefixes)
+#import_body(dataset, file_prefixes, file_prefixes)
 check_body_entries(dataset, file_prefixes)
 
 
