@@ -1,7 +1,7 @@
 import torch
 import torchvision
 import torchvision.transforms as transforms
-import matplotlib.pyplot as plt
+
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -30,7 +30,7 @@ output_size = len(body_labels)
 
 k_fold_splits = 4
 
-validation_iter = 10
+validation_iter = 1
 
 batch_size = 10
 
@@ -100,7 +100,7 @@ def batch_entries(batch_size, entries):
 			label_batch.append(label)
 
 		tensor = torch.tensor(inputs_batch)
-		label = torch.tensor(label_batch)
+		label = torch.tensor(label_batch, dtype=torch.long)
 		batched_entries.append(TrainEntry(label, tensor))
 	return np.array(batched_entries)
 
@@ -164,9 +164,9 @@ def get_accuracy(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [10, 25, 50, 100]
-	hidden_sizes = [3, 5, 10, 20]
-	nums_layers = [1, 2, 3]
+	nums_epochs = [50]#[10, 25, 50, 100]
+	hidden_sizes = [20]#[3, 5, 10, 20]
+	nums_layers = [2]#[1, 2, 3]
 
 	results = []
 
