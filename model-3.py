@@ -183,7 +183,7 @@ def hyperopt():
 	num_layers = 1
 
 	nums_epochs = [25,50,100,200]
-	hidden_sizes = [20]
+	hidden_sizes = [10, 40]
 	nums_layers = [1]
 
 	results = []

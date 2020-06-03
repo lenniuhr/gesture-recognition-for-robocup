@@ -7,7 +7,7 @@ from fileutil import *
 from mathutil import *
 from opwrapper import *
 
-batch_size = 55
+batch_size = 55 # maximum size for images to import, then a buserror (10) occured
 
 class Image:
 	def __init__(self, name, frame_nr, data):
@@ -49,12 +49,6 @@ def import_keypoints(dataset, file_prefixes):
 			op_result = get_keypoints(image.data)
 			print("Finished importing image file '" + image.name + "'")
 			print("End index: " + str(end_index))
-			#print("------ BODY ------")
-			#print(op_result.body)
-			#cv2.namedWindow('image',cv2.WINDOW_NORMAL)
-			#cv2.resizeWindow('image', 600, 800)
-			#cv2.imshow('image', op_result.image)
-			#cv2.waitKey(0)
 			upsert_raw_entry(dataset, image.name, image.frame_nr, op_result.body)
 
 def show_image(file):
@@ -67,6 +61,4 @@ def show_image(file):
 	cv2.imshow('image', op_result.image)
 	cv2.imwrite("images/op-example-2.jpeg", op_result.image)
 	cv2.waitKey(0)
-
-#show_image("images/clap-example - 1.jpeg")
 

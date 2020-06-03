@@ -4,7 +4,6 @@ import numpy as np
 from importutil import *
 from mathutil import *
 
-
 HEAD = 0
 NECK = 1
 PELVIS = 8
@@ -57,13 +56,12 @@ def import_body(dataset, file_prefixes, labels):
 		file_prefix = file_prefixes[i]
 		label = labels[i]
 		entries = get_raw_entries(dataset, file_prefix)
-		#print(entries)
+
 		for entry in entries:
 			positions = get_bounding_box(entry)
 			angles = get_body_angles(entry)
 			inputs = np.concatenate((angles, positions))
 			
-			#print_body_angles(angles)
 			upsert_body_entry(dataset, entry.filename, entry.frame_nr, label, inputs)
 		print("Successfully import file prefix '" + file_prefix + "'")
 
@@ -74,16 +72,13 @@ def check_body_entries(dataset, labels):
 
 
 
-#---------- START ----------
-
 print("---------- START IMPORT BODY ----------")
 
-#show_image("images/pose-1/arm-up-left - 13.jpeg")
 
+#dataset = "pose-1"
 
 #file_prefixes = ["arm-up-left", "arm-up-right", "idle", "dab", "clap", "show-left", "show-right", "t-pose"]
 #file_prefixes = ["idle"]
-#dataset = "pose-1"
 
 #import_keypoints(dataset, file_prefixes)
 #import_keypoints(dataset, file_prefixes, start_index = 38, end_index = 74)
@@ -91,7 +86,6 @@ print("---------- START IMPORT BODY ----------")
 
 #import_body(dataset, file_prefixes, file_prefixes)
 #check_body_entries(dataset, file_prefixes)
-
 
 
 
@@ -104,21 +98,6 @@ print("---------- START IMPORT BODY ----------")
 #import_keypoints(dataset, file_prefixes, start_index = 1, end_index = 37)
 #import_keypoints(dataset, file_prefixes, start_index = 38, end_index = 74)
 #import_keypoints(dataset, file_prefixes, start_index = 112, end_index = 148)
-#check_raw_entries(dataset, file_prefixes)
-
-#import_body(dataset, file_prefixes, file_prefixes)
-#check_body_entries(dataset, file_prefixes)
-
-
-#show_image("images/pose-3/cross-arms - 14.jpeg")
-#sys.exit(-1)
-
-#dataset = "pose-3"
-
-#file_prefixes = ["idle", "clap", "time-out", "cross-arms"] 
-#file_prefixes = ["idle"]
-
-#import_keypoints(dataset, file_prefixes)
 #check_raw_entries(dataset, file_prefixes)
 
 #import_body(dataset, file_prefixes, file_prefixes)

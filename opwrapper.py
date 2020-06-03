@@ -27,6 +27,7 @@ class OpResult:
         self.body = body
         self.image = image
 
+# convert keypoints two 2d array
 def convert_keypoints(keypoints):
     result = [];
     for e in keypoints:
