@@ -17,10 +17,7 @@ PATH = "./pytorch-model.pth"
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="True"
 
-#body_labels = ['idle', 'both-arms-up', 'arm-up-right', "arm-up-left", "show-right", "show-left", "show-up-right", "show-up-left", "clap", "cheer", 
-#"complain", "both-arms-right", "both-arms-left", "t-pose", "fists-together", "arm-bow-right", "arm-bow-left", "cross-arms", "time-out-low", "time-out-high"]
-
-body_labels = ['clap', 'spin']
+body_labels = ['clap', 'spin', 'time-out', 'dance']
 
 def label_to_number(label):
 	return body_labels.index(label)
@@ -71,6 +68,14 @@ class Model(nn.Module):
 def get_input():
 
 	body_entries = get_all_body_entries(dataset)
+
+
+	entries = []
+	for i in range(0, len(body_entries), 10):
+		entries.append(body_entries[i])
+
+	body_entries = np.array(entries)
+
 
 	train_entries = []
 	for body_entry in body_entries:
@@ -251,10 +256,11 @@ print("---------- START ----------")
 
 #hyperopt()
 
-validate_classes(1, 2, 1)
+result = validate_model(100, 2, 10)
+print(result)
+
+#validate_classes(1, 2, 1)
 #print(result)
-
-
 
 
 
