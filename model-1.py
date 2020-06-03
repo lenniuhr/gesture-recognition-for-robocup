@@ -30,7 +30,7 @@ output_size = len(body_labels)
 
 k_fold_splits = 4
 
-validation_iter = 1
+validation_iter = 10
 
 batch_size = 10
 
@@ -56,7 +56,7 @@ class Model(nn.Module):
 		self.softmax = nn.LogSoftmax(dim=1)
 
 	def forward(self, x):
-		x = self.i2h(x)
+		x = F.relu(self.i2h(x))
 
 		for h2h in self.h2h_layers:
 			x = F.relu(h2h(x))
@@ -164,8 +164,8 @@ def get_accuracy(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [50]#[10, 25, 50, 100]
-	hidden_sizes = [20]#[3, 5, 10, 20]
+	nums_epochs = [10, 25, 50, 100, 200]
+	hidden_sizes = [10]#[3, 5, 10, 20]
 	nums_layers = [2]#[1, 2, 3]
 
 	results = []

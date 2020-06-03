@@ -31,7 +31,7 @@ output_size = len(body_labels)
 
 k_fold_splits = 4
 
-validation_iter = 3
+validation_iter = 10
 
 batch_size = 10
 
@@ -102,6 +102,7 @@ def batch_entries(batch_size, entries):
 
 		tensor = torch.tensor(inputs_batch)
 		label = torch.tensor(label_batch)
+		label = label.long()
 		batched_entries.append(TrainEntry(label, tensor))
 	return np.array(batched_entries)
 
@@ -226,9 +227,9 @@ def get_accuracy_with_labels(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [100]#[10, 25, 50 , 100]
-	hidden_sizes = [40]#[5, 10, 20, 30]
-	nums_layers = [3]#[1, 2, 3]
+	nums_epochs = [25, 50 , 100, 200]
+	hidden_sizes = [50]#[5, 10, 20, 30]
+	nums_layers = [1, 2, 3]#[1, 2, 3]
 
 	results = []
 
@@ -247,9 +248,9 @@ def hyperopt():
 
 print("---------- START ----------")
 
-#hyperopt()
+hyperopt()
 
-validate_classes(100, 2, 40)
+#validate_classes(50, 2, 20)
 #print(result)
 
 
