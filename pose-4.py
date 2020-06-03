@@ -256,7 +256,7 @@ print("---------- START ----------")
 
 #hyperopt()
 
-result = validate_model(100, 2, 10)
+result = validate_model(200, 2, 10)
 print(result)
 
 #validate_classes(1, 2, 1)

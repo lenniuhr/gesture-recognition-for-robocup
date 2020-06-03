@@ -10,7 +10,7 @@ def rotate_image(image, angle):
   return result
  
 # Opens the Video file
-label = "dance"
+label = "fold"
 num_of_frames = 100
 clip = 9
 start_index = (clip - 1) * 100 + 1
