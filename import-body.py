@@ -105,7 +105,7 @@ print("---------- START IMPORT BODY ----------")
 
 
 
-dataset = "pose-4"
+dataset = "pose-3"
 
 #file_prefixes = ["dance", "clap", "spin", "time-out", "idle", "fold"] 
 file_prefixes = ["fold"]
