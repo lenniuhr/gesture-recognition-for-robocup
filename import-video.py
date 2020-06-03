@@ -16,7 +16,7 @@ clip = 9
 start_index = (clip - 1) * 100 + 1
 
 
-cap= cv2.VideoCapture("images/video-2/" + label + " - " + str(clip) + ".mov")
+cap= cv2.VideoCapture("images/video/" + label + " - " + str(clip) + ".mov")
 i=0
 j=start_index
 while(cap.isOpened()):

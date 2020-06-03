@@ -165,8 +165,8 @@ def get_accuracy(model, test_entries):
 def hyperopt():
 
 	nums_epochs = [10, 25, 50, 100, 200]
-	hidden_sizes = [10]#[3, 5, 10, 20]
-	nums_layers = [2]#[1, 2, 3]
+	hidden_sizes = [5, 10, 20, 30]
+	nums_layers = [2, 3]
 
 	results = []
 
