@@ -18,7 +18,7 @@ PATH = './pytorch-model.pth'
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
-body_labels = ['idle', 'clap', "time-out", "cross-arms"]
+body_labels = ['spin', 'clap']
 
 num_of_labels = len(body_labels)
 
@@ -33,14 +33,10 @@ class TrainEntry:
 		self.number = number
 
 def label_to_number(label):
-	if(label == 'idle'):
+	if(label == 'spin'):
 		return 0
 	if(label == 'clap'):
 		return 1
-	if(label == 'time-out'):
-		return 2
-	if(label == 'cross-arms'):
-		return 3
 
 class RNN(nn.Module):
 	def __init__(self, input_size, recurrent_size, hidden_size, output_size):
@@ -49,9 +45,6 @@ class RNN(nn.Module):
 		self.recurrent_size = recurrent_size
 
 		self.r1 = nn.Linear(input_size + recurrent_size, recurrent_size)
-
-		self.i2o = nn.Linear(input_size + hidden_size, input_size + hidden_size)
-		self.i2o2 = nn.Linear(input_size + hidden_size, output_size)
 
 		self.fc1 = nn.Linear(input_size + recurrent_size, hidden_size)
 		self.fc2 = nn.Linear(hidden_size, hidden_size)
@@ -78,13 +71,13 @@ print("---------- START ----------")
 
 sequence_length = 10
 input_size = 16
-hidden_size = 20
-recurrent_size = 20
+hidden_size = 5
+recurrent_size = 5
 categories = num_of_labels
 learning_rate = 0.001
-num_of_epochs = 30
+num_of_epochs = 10
 current_loss = 0
-dataset = "pose-3"
+dataset = "pose-4"
 
 #rnn = RNN(input_size, hidden_size, categories)
 #optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
@@ -127,15 +120,35 @@ def get_sequences(labels):
 		for i in range(0, len(entries), sequence_length):
 			frames = []
 			for j in range(i, i + sequence_length):
-				print(entries[j].filename)
-				print(entries[j].frame_nr)
 				frames.append([(entries[j].angles * 2) - 1])
 			tensor = torch.tensor(frames)
 			tensor = tensor.float()
 			label = torch.tensor([label_to_number(entries[j].label)])
 			train_entries.append(TrainEntry(label, tensor, j))
 
+
+
+
+
 	print(len(train_entries))
+	for entry in train_entries:
+		print(entry.label)
+
+	i = 0
+	for entry in train_entries:
+		i = i + 1
+		if i % 2 == 0:
+			entry.label = torch.tensor([label_to_number("spin")])
+		else:
+			entry.label = torch.tensor([label_to_number("clap")])
+
+	for entry in train_entries:
+		print(entry.label)
+	print(len(train_entries))
+
+
+
+
 	return np.array(train_entries)
 
 def train_model(entries):
