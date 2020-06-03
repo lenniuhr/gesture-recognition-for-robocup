@@ -30,13 +30,13 @@ output_size = len(classes)
 
 k_fold_splits = 4
 
-validation_iter = 5
+validation_iter = 10
 
 sequence_length = 10
 
 batch_size = 10
 
-learning_rate = 0.01
+learning_rate = 0.005
 
 class TrainEntry:
 	def __init__(self, label, tensor):
@@ -160,7 +160,7 @@ def validate_model(num_epochs, num_layers, hidden_size):
 
 	accuracys = []
 	for i in range (validation_iter):
-		
+
 		print("validation - num_epochs: %d, num_layers: %d, hidden_size: %d - iteration %d/%d"  % (num_epochs, num_layers, hidden_size, (i + 1), validation_iter))
 		
 		kf = KFold(n_splits = k_fold_splits, shuffle = True)
@@ -182,8 +182,8 @@ def hyperopt():
 
 	num_layers = 1
 
-	nums_epochs = [25, 50, 100, 200]
-	hidden_sizes = [10]
+	nums_epochs = [25,50,100,200]
+	hidden_sizes = [20]
 	nums_layers = [1]
 
 	results = []
