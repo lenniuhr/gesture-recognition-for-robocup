@@ -131,11 +131,11 @@ dataset = "pose-4"
 #file_prefixes = ["dance", "clap", "spin", "time-out", "idle", "fold"] 
 file_prefixes = ["fold"]
 
-import_keypoints(dataset, file_prefixes)
-check_raw_entries(dataset, file_prefixes)
+#import_keypoints(dataset, file_prefixes)
+#check_raw_entries(dataset, file_prefixes)
 
-#import_body(dataset, file_prefixes, file_prefixes)
-#check_body_entries(dataset, file_prefixes)
+import_body(dataset, file_prefixes, file_prefixes)
+check_body_entries(dataset, file_prefixes)
 
 
 

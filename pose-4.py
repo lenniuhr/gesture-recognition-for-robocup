@@ -17,7 +17,7 @@ PATH = "./pytorch-model.pth"
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="True"
 
-body_labels = ["clap", "spin", "time-out", "dance", "idle"]
+body_labels = ["clap", "spin", "time-out", "dance", "idle", "fold"]
 
 def label_to_number(label):
 	return body_labels.index(label)
@@ -260,7 +260,7 @@ print("---------- START ----------")
 
 #hyperopt()
 
-result = validate_model(100, 2, 10)
+result = validate_model(200, 2, 20)
 print(result)
 
 #validate_classes(1, 2, 1)
