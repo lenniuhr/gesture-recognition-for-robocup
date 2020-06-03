@@ -17,7 +17,7 @@ PATH = "./pytorch-model.pth"
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="True"
 
-body_labels = ['clap', 'spin', 'time-out', 'dance']
+body_labels = ["clap", "spin", "time-out", "dance", "idle"]
 
 def label_to_number(label):
 	return body_labels.index(label)
@@ -112,7 +112,7 @@ def batch_entries(batch_size, entries):
 		batched_entries.append(TrainEntry(label, tensor))
 	return np.array(batched_entries)
 
-def train_model(num_epochs, num_layers, hidden_size, train_entries, print_loss = True):
+def train_model(num_epochs, num_layers, hidden_size, train_entries, print_loss = False):
 
 	model = Model(input_size, num_layers, hidden_size, output_size)
 	model = model.float()
@@ -141,6 +141,8 @@ def validate_classes(num_epochs, num_layers, hidden_size):
 
 	entries = get_input()
 
+	print(len(entries))
+
 	accuracys = []
 	label_correct_acc = np.zeros(output_size)
 	label_total_acc = np.zeros(output_size)
@@ -164,11 +166,13 @@ def validate_classes(num_epochs, num_layers, hidden_size):
 
 	result = "---------- \nnum_epochs: %d, num_layers: %d, hidden_size: %d \nmean: %.1f, std: %.1f"  % (num_epochs, num_layers, hidden_size, mean, std)
 	for i in range(output_size):
-		print('Overall accuracy of %s (%d): %d %%' % (body_labels[i], label_total_acc[i], 100 * label_correct_acc[i] / label_total_acc[i]))
+		print("Overall accuracy of %s (%d): %d %%" % (body_labels[i], label_total_acc[i], 100 * label_correct_acc[i] / label_total_acc[i]))
 
 def validate_model(num_epochs, num_layers, hidden_size):
 
 	entries = get_input()
+
+	print(len(entries))
 
 	accuracys = []
 	for i in range (validation_iter):
@@ -256,7 +260,7 @@ print("---------- START ----------")
 
 #hyperopt()
 
-result = validate_model(200, 2, 10)
+result = validate_model(100, 2, 10)
 print(result)
 
 #validate_classes(1, 2, 1)
