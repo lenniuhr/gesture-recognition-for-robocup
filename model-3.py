@@ -17,28 +17,26 @@ PATH = "./pytorch-model.pth"
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="True"
 
-body_labels = ["spin", "clap", "time-out", "dance", "idle", "fold"]
+classes = ["spin", "clap", "time-out", "dance", "idle", "fold"]
 
 def label_to_number(label):
-	return body_labels.index(label)
+	return classes.index(label)
 
 dataset = "pose-4"
 
 input_size = 16
 
-output_size = len(body_labels)
+output_size = len(classes)
 
 k_fold_splits = 4
 
-validation_iter = 1
+validation_iter = 5
 
 sequence_length = 10
 
 batch_size = 10
 
 learning_rate = 0.01
-
-num_layers = 1
 
 class TrainEntry:
 	def __init__(self, label, tensor):
@@ -48,20 +46,72 @@ class TrainEntry:
 class RNN(nn.Module):
 	def __init__(self, input_size, hidden_size, num_layers):
 		super().__init__()
+		self.hidden_size = hidden_size
+		self.num_layers = num_layers
+
 		self.RNN = nn.RNN(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True) #inputs and outputs are  (batch, seq, feature)
 		self.r2h = nn.Linear(hidden_size, hidden_size)
 		self.h2o = nn.Linear(hidden_size, output_size)
 		self.softmax = nn.LogSoftmax(dim=1)
 		
-	def forward(self, x, hidden_state):
+	def forward(self, x):
+		hidden_state = torch.zeros([self.num_layers, x.shape[0], self.hidden_size])
 		x, h = self.RNN(x, hidden_state)
-		x = F.relu(self.r2h(x[:,-1,:])) # gets last output
+		x = F.relu(self.r2h(x[:,-1,:])) # get last output
 		x = self.h2o(x)
 		x = self.softmax(x)
 		return x
 
 
-def train_model(num_epochs, num_layers, hidden_size, train_entries, print_loss = False):
+def get_input(log = False):
+
+	train_entries = []
+
+	for label in classes:
+		entries = get_body_entries(dataset, label)
+
+		if log: 
+			print("Found %d frames for label %s" % (len(entries), label))
+
+		sequences = []
+		for i in range(0, len(entries), sequence_length):
+			frames = []
+			for j in range(i, i + sequence_length):
+				frames.append((entries[j].angles * 2) - 1)
+
+
+			tensor = torch.tensor([frames])
+			tensor = tensor.float()
+			train_entries.append(TrainEntry(torch.tensor([label_to_number(label)]), tensor))
+
+	if log: 
+		print("Created %d clips with length %d" % (len(train_entries), sequence_length))
+
+	return np.array(train_entries)
+
+
+def batch_entries(batch_size, entries):
+	batched_entries = []
+	for i in range(0, len(entries), batch_size):
+
+		inputs_batch = []
+		label_batch = []
+		for j in range(i, i + batch_size):
+			if j >= len(entries):
+				break
+
+			inputs = entries[j].tensor[0].numpy()
+			inputs_batch.append(inputs)
+			label = entries[j].label[0]
+			label_batch.append(label)
+
+		tensor = torch.tensor(inputs_batch)
+		label = torch.tensor(label_batch, dtype=torch.long)
+		batched_entries.append(TrainEntry(label, tensor))
+	return np.array(batched_entries)
+
+
+def train_model(num_epochs, num_layers, hidden_size, train_entries, log = False):
 
 	model = RNN(input_size, hidden_size, num_layers)
 	model = model.float()
@@ -77,63 +127,16 @@ def train_model(num_epochs, num_layers, hidden_size, train_entries, print_loss =
 		running_loss = 0
 		for train_entry in batched_entries:
 			optimizer.zero_grad()
-			#print(train_entry.tensor.shape)
-			hState = torch.zeros([num_layers, batch_size, hidden_size])
-			outputs = model(train_entry.tensor, hState)
-			#print(train_entry.label)
+			hState = torch.zeros([num_layers, train_entry.tensor.shape[0], hidden_size])
+			outputs = model(train_entry.tensor)
 			loss = criterion(outputs, train_entry.label)
 			loss.backward()
 			optimizer.step()
 			running_loss += loss.item()
-		if print_loss:
+		if log:
 			print("Epoch %i: %f loss" % (epoch, running_loss))
 	return model
 
-
-def get_input():
-
-	train_entries = []
-
-	for label in body_labels:
-		entries = get_body_entries(dataset, label)
-
-		sequences = []
-		for i in range(0, len(entries), sequence_length):
-			frames = []
-			for j in range(i, i + sequence_length):
-				#print(entries[j].label + " - " + str(entries[j].frame_nr))
-				frames.append((entries[j].angles * 2) - 1)
-
-
-			tensor = torch.tensor([frames])
-			tensor = tensor.float()
-			train_entries.append(TrainEntry(torch.tensor([label_to_number(label)]), tensor))
-
-	return np.array(train_entries)
-
-
-def batch_entries(batch_size, entries):
-	batched_entries = []
-	for i in range(0, len(entries), batch_size):
-
-		inputs_batch = []
-		label_batch = []
-		for j in range(i, i + batch_size):
-			if j >= len(entries):
-				return np.array(batched_entries)
-
-			#print(entries[j].tensor)
-			#print(entries[j].label)
-
-			inputs = entries[j].tensor[0].numpy()
-			inputs_batch.append(inputs)
-			label = entries[j].label[0]
-			label_batch.append(label)
-
-		tensor = torch.tensor(inputs_batch)
-		label = torch.tensor(label_batch, dtype=torch.long)
-		batched_entries.append(TrainEntry(label, tensor))
-	return np.array(batched_entries)
 
 def get_accuracy(model, test_entries):
 
@@ -142,8 +145,7 @@ def get_accuracy(model, test_entries):
 		for test_entry in test_entries:
 
 			label = test_entry.label.item()
-			hidden_state = torch.zeros([num_layers, 1, 20])
-			outputs = model.forward(test_entry.tensor, hidden_state)
+			outputs = model.forward(test_entry.tensor)
 			_, predicted = torch.max(outputs, 1)
 			if (predicted == label):
 				correct += 1
@@ -151,17 +153,19 @@ def get_accuracy(model, test_entries):
 	accuracy = 100 * correct / len(test_entries)
 	return accuracy
 
+
 def validate_model(num_epochs, num_layers, hidden_size):
 
 	entries = get_input()
 
-	print("Found %d entries" % len(entries))
-
 	accuracys = []
 	for i in range (validation_iter):
+		
+		print("validation - num_epochs: %d, num_layers: %d, hidden_size: %d - iteration %d/%d"  % (num_epochs, num_layers, hidden_size, (i + 1), validation_iter))
+		
 		kf = KFold(n_splits = k_fold_splits, shuffle = True)
 		for train_index, test_index in kf.split(entries):
-			print(test_index)
+
 			train_entries = entries[train_index]
 			test_entries = entries[test_index]
 
@@ -171,31 +175,38 @@ def validate_model(num_epochs, num_layers, hidden_size):
 
 	return accuracys
 
+
 def hyperopt():
 
-	nums_epochs = [50]
-	hidden_sizes = [20]#[3, 5, 10, 20]
+
+
+	num_layers = 1
+
+	nums_epochs = [25, 50, 100, 200]
+	hidden_sizes = [10]
+	nums_layers = [1]
 
 	results = []
 
 	for num_epochs in nums_epochs:
 		for hidden_size in hidden_sizes:
-			iteration = "num_epochs: %d, num_layers: %d, hidden_size: %d"  % (num_epochs, num_layers, hidden_size)
-			print(iteration)
+			for num_layers in nums_layers:
+				iteration = "num_epochs: %d, num_layers: %d, hidden_size: %d"  % (num_epochs, num_layers, hidden_size)
+				print(iteration)
 
-			accuracys = validate_model(num_epochs, num_layers, hidden_size)
+				accuracys = validate_model(num_epochs, num_layers, hidden_size)
 
-			mean = np.mean(accuracys)
-			std = np.std(accuracys)
+				mean = np.mean(accuracys)
+				std = np.std(accuracys)
 
-			results.append(iteration)
-			results.append("Mean: %.2f, std: %.2f" % (mean, std))
+				results.append(iteration)
+				results.append("Mean: %.2f, std: %.2f" % (mean, std))
 
 	print("---------- RESULTS ----------")
 	for result in results:
 		print(result)
 
-#-------- IMPORT IMAGES --------#
+
 
 print("---------- START ----------")
 

@@ -57,7 +57,7 @@ class Model(nn.Module):
 		self.softmax = nn.LogSoftmax(dim=1)
 
 	def forward(self, x):
-		x = self.i2h(x)
+		x = F.relu(self.i2h(x))
 
 		for h2h in self.h2h_layers:
 			x = F.relu(h2h(x))
