@@ -22,7 +22,7 @@ classes = ["spin", "clap", "time-out", "dance", "idle", "fold"]
 def label_to_number(label):
 	return classes.index(label)
 
-dataset = "pose-4"
+dataset = "pose-3"
 
 input_size = 16
 
