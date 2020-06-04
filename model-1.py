@@ -174,7 +174,7 @@ def hyperopt():
 	for num_layers in nums_layers:
 		for hidden_size in hidden_sizes:
 			for num_epochs in nums_epochs:
-				iteration = "num_layers: %d, hidden_size: %d, num_epochs: %d"  % (num_epochs, num_layers, hidden_size)
+				iteration = "num_layers: %d, hidden_size: %d, num_epochs: %d"  % (num_layers, hidden_size, num_epochs)
 				print(iteration)
 
 				accuracys = validate_model(num_epochs, num_layers, hidden_size)
