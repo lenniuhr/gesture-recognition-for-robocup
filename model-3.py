@@ -13,8 +13,6 @@ from sklearn.model_selection import train_test_split, KFold
 
 from fileutil import *
 
-PATH = "./pytorch-model.pth"
-
 os.environ["KMP_DUPLICATE_LIB_OK"]="True"
 
 classes = ["spin", "clap", "time-out", "dance", "idle", "fold"]
@@ -49,8 +47,9 @@ class RNN(nn.Module):
 		self.hidden_size = hidden_size
 		self.num_layers = num_layers
 
-		self.RNN = nn.RNN(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True) #inputs and outputs are  (batch, seq, feature)
+		self.RNN = nn.RNN(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True, nonlinearity="relu") #inputs and outputs are  (batch, seq, feature)
 		self.r2h = nn.Linear(hidden_size, hidden_size)
+		self.h2h = nn.Linear(hidden_size, hidden_size)
 		self.h2o = nn.Linear(hidden_size, output_size)
 		self.softmax = nn.LogSoftmax(dim=1)
 		
@@ -58,6 +57,7 @@ class RNN(nn.Module):
 		hidden_state = torch.zeros([self.num_layers, x.shape[0], self.hidden_size])
 		x, h = self.RNN(x, hidden_state)
 		x = F.relu(self.r2h(x[:,-1,:])) # get last output
+		x = F.relu(self.h2h(x))
 		x = self.h2o(x)
 		x = self.softmax(x)
 		return x
@@ -182,16 +182,16 @@ def hyperopt():
 
 	num_layers = 1
 
-	nums_epochs = [25,50,100,200]
-	hidden_sizes = [10, 40]
+	nums_epochs = [25, 50, 100, 200]#, 400]
+	hidden_sizes = [10, 20, 30, 40]
 	nums_layers = [1]
 
 	results = []
 
-	for num_epochs in nums_epochs:
+	for num_layers in nums_layers:
 		for hidden_size in hidden_sizes:
-			for num_layers in nums_layers:
-				iteration = "num_epochs: %d, num_layers: %d, hidden_size: %d"  % (num_epochs, num_layers, hidden_size)
+			for num_epochs in nums_epochs:
+				iteration = "num_layers: %d, hidden_size: %d, num_epochs: %d"  % (num_layers, hidden_size, num_epochs)
 				print(iteration)
 
 				accuracys = validate_model(num_epochs, num_layers, hidden_size)
@@ -199,8 +199,12 @@ def hyperopt():
 				mean = np.mean(accuracys)
 				std = np.std(accuracys)
 
+				result = "Mean: %.1f, std: %.1f" % (mean, std)
+				print(iteration)
+				print(result)
+
 				results.append(iteration)
-				results.append("Mean: %.2f, std: %.2f" % (mean, std))
+				results.append(result)
 
 	print("---------- RESULTS ----------")
 	for result in results:

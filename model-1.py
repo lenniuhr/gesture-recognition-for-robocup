@@ -13,8 +13,6 @@ from sklearn.model_selection import train_test_split, KFold
 
 from fileutil import *
 
-PATH = "./pytorch-model.pth"
-
 os.environ["KMP_DUPLICATE_LIB_OK"]="True"
 
 body_labels = ["idle", "t-pose", "dab", "clap", "show-left", "show-right", "arm-up-left", "arm-up-right"]
