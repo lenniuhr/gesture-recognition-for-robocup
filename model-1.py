@@ -164,16 +164,17 @@ def get_accuracy(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [10, 25, 50, 100, 200]
-	hidden_sizes = [5, 10, 20, 30]
-	nums_layers = [2, 3]
+	nums_epochs = [100, 200, 400]#[10, 25, 50, 100, 200]
+	hidden_sizes = [20, 30]
+	nums_layers = [2]
 
 	results = []
 
-	for num_epochs in nums_epochs:
+
+	for num_layers in nums_layers:
 		for hidden_size in hidden_sizes:
-			for num_layers in nums_layers:
-				iteration = "num_epochs: %d, num_layers: %d, hidden_size: %d"  % (num_epochs, num_layers, hidden_size)
+			for num_epochs in nums_epochs:
+				iteration = "num_layers: %d, hidden_size: %d, num_epochs: %d"  % (num_epochs, num_layers, hidden_size)
 				print(iteration)
 
 				accuracys = validate_model(num_epochs, num_layers, hidden_size)
@@ -182,7 +183,7 @@ def hyperopt():
 				std = np.std(accuracys)
 
 				results.append(iteration)
-				results.append("Mean: %.2f, std: %.2f" % (mean, std))
+				results.append("Mean: %.1f, std: %.1f" % (mean, std))
 
 	print("---------- RESULTS ----------")
 	for result in results:
@@ -193,9 +194,6 @@ def hyperopt():
 print("---------- START ----------")
 
 hyperopt()
-
-
-
 
 
 

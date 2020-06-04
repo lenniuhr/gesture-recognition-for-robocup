@@ -227,9 +227,9 @@ def get_accuracy_with_labels(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [25, 50 , 100, 200]
-	hidden_sizes = [50]#[5, 10, 20, 30]
-	nums_layers = [1, 2, 3]#[1, 2, 3]
+	nums_epochs = [25, 50 , 100, 200, 400]
+	hidden_sizes = [10, 20, 35, 50]
+	nums_layers = [2, 3]
 
 	results = []
 
@@ -238,6 +238,7 @@ def hyperopt():
 			for num_layers in nums_layers:
 
 				result = validate_model(num_epochs, num_layers, hidden_size)
+				print(result)
 				results.append(result)
 
 	print("---------- RESULTS ----------")
