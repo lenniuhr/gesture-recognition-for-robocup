@@ -227,7 +227,7 @@ def get_accuracy_with_labels(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [25, 50 , 100, 200, 400]
+	nums_epochs = [200]#, 200, 400]
 	hidden_sizes = [10, 20, 35, 50]
 	nums_layers = [2, 3]
 
