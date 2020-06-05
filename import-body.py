@@ -72,47 +72,49 @@ def check_body_entries(dataset, labels):
 
 
 
-print("---------- START IMPORT BODY ----------")
+print("---------- START IMPORT BODY FOR DATASET pose-1 ----------")
 
+dataset = "pose-1"
+file_prefixes = ["arm-up-left", "arm-up-right", "idle", "dab", "clap", "show-left", "show-right", "t-pose"]
 
-#dataset = "pose-1"
+# imports OpenPose keypoints to "pose-1-raw.json"
+import_keypoints(dataset, file_prefixes)
+check_raw_entries(dataset, file_prefixes)
 
-#file_prefixes = ["arm-up-left", "arm-up-right", "idle", "dab", "clap", "show-left", "show-right", "t-pose"]
-#file_prefixes = ["idle"]
-
-#import_keypoints(dataset, file_prefixes)
-#import_keypoints(dataset, file_prefixes, start_index = 38, end_index = 74)
-#check_raw_entries(dataset, file_prefixes)
-
-#import_body(dataset, file_prefixes, file_prefixes)
-#check_body_entries(dataset, file_prefixes)
+# imports selected angles and positions to "pose-1.json"
+import_body(dataset, file_prefixes, file_prefixes)
+check_body_entries(dataset, file_prefixes)
 
 
 
-#dataset = "pose-2"
+print("---------- START IMPORT BODY FOR DATASET pose-1 ----------")
 
-#file_prefixes = ["idle", "both-arms-up", "arm-up-right", "arm-up-left", "show-right", "show-left", "show-up-right", "show-up-left", "clap", 
-#"cheer", "complain", "both-arms-right", "both-arms-left", "t-pose", "fists-together", "arm-bow-right", "arm-bow-left", "cross-arms", "time-out-low", "time-out-high"]
-#file_prefixes = ["arm-up-left"]
+dataset = "pose-2"
 
-#import_keypoints(dataset, file_prefixes, start_index = 1, end_index = 37)
-#import_keypoints(dataset, file_prefixes, start_index = 38, end_index = 74)
-#import_keypoints(dataset, file_prefixes, start_index = 112, end_index = 148)
-#check_raw_entries(dataset, file_prefixes)
+file_prefixes = ["idle", "both-arms-up", "arm-up-right", "arm-up-left", "show-right", "show-left", "show-up-right", "show-up-left", "clap", 
+"cheer", "complain", "both-arms-right", "both-arms-left", "t-pose", "fists-together", "arm-bow-right", "arm-bow-left", "cross-arms", "time-out-low", "time-out-high"]
 
-#import_body(dataset, file_prefixes, file_prefixes)
-#check_body_entries(dataset, file_prefixes)
+# imports OpenPose keypoints to "pose-2-raw.json"
+import_keypoints(dataset, file_prefixes)
+check_raw_entries(dataset, file_prefixes)
+
+# imports selected angles and positions to "pose-2.json"
+import_body(dataset, file_prefixes, file_prefixes)
+check_body_entries(dataset, file_prefixes)
 
 
+
+print("---------- START IMPORT BODY FOR DATASET pose-3 ----------")
 
 dataset = "pose-3"
 
-#file_prefixes = ["dance", "clap", "spin", "time-out", "idle", "fold"] 
-file_prefixes = ["fold"]
+file_prefixes = ["dance", "clap", "spin", "time-out", "idle", "fold"] 
 
-#import_keypoints(dataset, file_prefixes)
-#check_raw_entries(dataset, file_prefixes)
+# imports OpenPose keypoints to "pose-3-raw.json"
+import_keypoints(dataset, file_prefixes)
+check_raw_entries(dataset, file_prefixes)
 
+# imports selected angles and positions to "pose-3.json"
 import_body(dataset, file_prefixes, file_prefixes)
 check_body_entries(dataset, file_prefixes)
 
