@@ -4,7 +4,7 @@ In dieser Arbeit wird das Framework *OpenPose* mit neuronalen Netzen kombiniert,
 
 ## OpenPose
 
-Zur Ausführung des Skripts **import-body.py** muss das Framework [*OpenPose*](https://github.com/CMU-Perceptual-Computing-Lab/openpose) installiert sein. Der Ordner *"openpose"* muss sich in diesem Verzeichnis befinden. [Zur Installation von *OpenPose*](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md).
+Zur Ausführung der Skripts **opwrapper.py** und **import-body.py** muss das Framework [*OpenPose*](https://github.com/CMU-Perceptual-Computing-Lab/openpose) installiert sein. Der Ordner *"openpose"* muss sich in diesem Verzeichnis befinden. [Zur Installation von *OpenPose*](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md).
 
 ## Die Datasets
 
@@ -12,7 +12,9 @@ Es wurde mit drei verschiedenen Datasets gearbeitet, welche sich in den Unterord
 
 ## Die Skripts
 
-**import-body.py**: Verarbeitet die Bilder der Datasets mit OpenPose und importiert diese in verschiedene json-Datenbanken. Zuerst werden die OpenPose keypoints in *"db/{dataset}-raw.json"* gespeichert. Daraufhin werden aus diesen keypoints Winkel und Positionen errechnet und in *"db/{dataset}.json"* gespeichert. Die Models werden mit den Daten in *"db/{dataset}.json"* trainiert und evaluiert.
+**opwrapper.py**: Enthält die Schnittstelle zu *OpenPose*.
+
+**import-body.py**: Verarbeitet die Bilder der Datasets mit *OpenPose* und importiert diese in verschiedene json-Datenbanken. Zuerst werden die *OpenPose* keypoints in *"db/{dataset}-raw.json"* gespeichert. Daraufhin werden aus diesen keypoints Winkel und Positionen errechnet und in *"db/{dataset}.json"* gespeichert. Die Models werden mit den Daten in *"db/{dataset}.json"* trainiert und evaluiert.
 
 ```bash
 dataset = "pose-1"
