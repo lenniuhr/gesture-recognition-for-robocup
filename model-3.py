@@ -49,7 +49,6 @@ class RNN(nn.Module):
 
 		self.RNN = nn.RNN(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True, nonlinearity="relu") #inputs and outputs are  (batch, seq, feature)
 		self.r2h = nn.Linear(hidden_size, hidden_size)
-		self.h2h = nn.Linear(hidden_size, hidden_size)
 		self.h2o = nn.Linear(hidden_size, output_size)
 		self.softmax = nn.LogSoftmax(dim=1)
 		
@@ -57,7 +56,6 @@ class RNN(nn.Module):
 		hidden_state = torch.zeros([self.num_layers, x.shape[0], self.hidden_size])
 		x, h = self.RNN(x, hidden_state)
 		x = F.relu(self.r2h(x[:,-1,:])) # get last output
-		x = F.relu(self.h2h(x))
 		x = self.h2o(x)
 		x = self.softmax(x)
 		return x
@@ -182,7 +180,7 @@ def hyperopt():
 
 	num_layers = 1
 
-	nums_epochs = [25, 50, 100, 200]#, 400]
+	nums_epochs = [400]
 	hidden_sizes = [10, 20, 30, 40]
 	nums_layers = [1]
 
