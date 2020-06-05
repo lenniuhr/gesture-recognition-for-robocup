@@ -135,7 +135,7 @@ def validate_model(num_epochs, num_layers, hidden_size):
 	for i in range (validation_iter):
 		kf = KFold(n_splits = k_fold_splits, shuffle = True)
 		for train_index, test_index in kf.split(entries):
-			print(test_index)
+			
 			train_entries = entries[train_index]
 			test_entries = entries[test_index]
 
@@ -162,9 +162,9 @@ def get_accuracy(model, test_entries):
 
 def hyperopt():
 
-	nums_epochs = [100, 200, 400]#[10, 25, 50, 100, 200]
-	hidden_sizes = [20, 30]
-	nums_layers = [2]
+	nums_epochs = [25, 50, 100, 200, 400]
+	hidden_sizes = [10, 20, 30, 40]
+	nums_layers = [1, 2, 3]
 
 	results = []
 

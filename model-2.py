@@ -129,7 +129,7 @@ def train_model(num_epochs, num_layers, hidden_size, train_entries, print_loss =
 			print("Epoch %i: %f loss" % (epoch, running_loss))
 	return model
 
-def validate_classes(num_epochs, num_layers, hidden_size):
+def validate_model_detailed(num_epochs, num_layers, hidden_size):
 
 	entries = get_input()
 
@@ -146,7 +146,7 @@ def validate_classes(num_epochs, num_layers, hidden_size):
 			test_entries = entries[test_index]
 
 			model = train_model(num_epochs, num_layers, hidden_size, train_entries)
-			accuracy, label_correct, label_total = get_accuracy_with_labels(model, test_entries)
+			accuracy, label_correct, label_total = get_detailed_accuracy(model, test_entries)
 			accuracys.append(accuracy)
 			label_correct_acc += label_correct
 			label_total_acc += label_total
@@ -157,6 +157,28 @@ def validate_classes(num_epochs, num_layers, hidden_size):
 	result = "---------- \nnum_epochs: %d, num_layers: %d, hidden_size: %d \nmean: %.1f, std: %.1f"  % (num_epochs, num_layers, hidden_size, mean, std)
 	for i in range(output_size):
 		print('Overall accuracy of %s (%d): %d %%' % (body_labels[i], label_total_acc[i], 100 * label_correct_acc[i] / label_total_acc[i]))
+
+def get_detailed_accuracy(model, test_entries):
+
+	print(len(test_entries))
+	correct = 0
+	label_correct = np.zeros(output_size)
+	label_total = np.zeros(output_size)
+
+	with torch.no_grad():
+		for test_entry in test_entries:
+			
+			label = test_entry.label.item()
+			outputs = model.forward(test_entry.tensor)
+			_, predicted = torch.max(outputs, 1)
+			if (predicted == label):
+				correct += 1
+			if (predicted == label):
+				label_correct[label] += 1
+			label_total[label] += 1
+
+	accuracy = 100 * correct / len(test_entries)
+	return accuracy, label_correct, label_total
 
 def validate_model(num_epochs, num_layers, hidden_size):
 
@@ -201,33 +223,11 @@ def get_accuracy(model, test_entries):
 	accuracy = 100 * correct / len(test_entries)
 	return accuracy
 
-def get_accuracy_with_labels(model, test_entries):
-
-	print(len(test_entries))
-	correct = 0
-	label_correct = np.zeros(output_size)
-	label_total = np.zeros(output_size)
-
-	with torch.no_grad():
-		for test_entry in test_entries:
-			
-			label = test_entry.label.item()
-			outputs = model.forward(test_entry.tensor)
-			_, predicted = torch.max(outputs, 1)
-			if (predicted == label):
-				correct += 1
-			if (predicted == label):
-				label_correct[label] += 1
-			label_total[label] += 1
-
-	accuracy = 100 * correct / len(test_entries)
-	return accuracy, label_correct, label_total
-
 def hyperopt():
 
-	nums_epochs = [400]
-	hidden_sizes = [10,20,35,50]
-	nums_layers = [3]
+	nums_epochs = [25, 50, 100, 200, 400]
+	hidden_sizes = [10, 20, 35, 50]
+	nums_layers = [1, 2, 3]
 
 	results = []
 
@@ -248,9 +248,6 @@ def hyperopt():
 print("---------- START ----------")
 
 hyperopt()
-
-#validate_classes(50, 2, 20)
-#print(result)
 
 
 

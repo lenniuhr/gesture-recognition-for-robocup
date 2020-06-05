@@ -176,13 +176,9 @@ def validate_model(num_epochs, num_layers, hidden_size):
 
 def hyperopt():
 
-
-
-	num_layers = 1
-
-	nums_epochs = [400]
+	nums_epochs = [25, 50, 100, 200, 400]
 	hidden_sizes = [10, 20, 30, 40]
-	nums_layers = [1]
+	nums_layers = [1, 2]
 
 	results = []
 
