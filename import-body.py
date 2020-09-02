@@ -87,7 +87,7 @@ check_body_entries(dataset, file_prefixes)
 
 
 
-print("---------- START IMPORT BODY FOR DATASET pose-1 ----------")
+print("---------- START IMPORT BODY FOR DATASET pose-2 ----------")
 
 dataset = "pose-2"
 

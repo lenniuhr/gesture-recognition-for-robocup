@@ -5,7 +5,7 @@ import numpy as np
 
 from fileutil import *
 from mathutil import *
-from opwrapper import *
+from imageutil import *
 
 batch_size = 55 # maximum size for images to import, then a buserror (10) occured
 
@@ -46,19 +46,18 @@ def import_keypoints(dataset, file_prefixes):
 		images = read_images(dataset, file_prefix, start_index, end_index)
 		for image in images:
 			print("Importing image file '" + image.name + "'")
-			op_result = get_keypoints(image.data)
+			op_result = get_coach_keypoints(image.data)
 			print("Finished importing image file '" + image.name + "'")
 			print("End index: " + str(end_index))
 			upsert_raw_entry(dataset, image.name, image.frame_nr, op_result.body)
 
 def show_image(file):
 	image = cv2.imread(file)
-	print(image)
-	op_result = get_keypoints(image)
-	print(op_result)
+	op_result = get_coach_keypoints(image)
 	cv2.namedWindow('image',cv2.WINDOW_NORMAL)
 	cv2.resizeWindow('image', 600, 600)
 	cv2.imshow('image', op_result.image)
 	cv2.imwrite("images/op-example-2.jpeg", op_result.image)
 	cv2.waitKey(0)
 
+show_image("images/yellow-tshirt.jpeg")

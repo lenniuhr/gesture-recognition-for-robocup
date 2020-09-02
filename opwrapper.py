@@ -21,21 +21,6 @@ except Exception as e:
     print(e)
     sys.exit(-1)
 
-
-class OpResult:
-    def __init__(self, body, image):
-        self.body = body
-        self.image = image
-
-# convert keypoints two 2d array
-def convert_keypoints(keypoints):
-    result = [];
-    for e in keypoints:
-        newX = e[0]
-        newY = e[1]
-        result.append([newX, newY])
-    return np.array(result)
-
 # From Python
 # It requires OpenCV installed for Python
 def get_keypoints(image):
@@ -60,19 +45,16 @@ def get_keypoints(image):
         if(num is 0):
             print("No person found in image!")
             sys.exit(-1)
-        elif(num > 1):
-            print(str(num) + " persons found in image!")
-            sys.exit(-1)
+        return datum
 
-        body = convert_keypoints(datum.poseKeypoints[0])
-        output_image = datum.cvOutputData
+        #body = convert_keypoints(datum.poseKeypoints[0])
+        #output_image = datum.cvOutputData
 
-        return OpResult(body, output_image)
+        #return OpResult(datum.poseKeypoints, output_image)
 
     except Exception as e:
         print("Openpose Error: ")
         print(e)
-        return get_keypoints(image)
 
 
 
