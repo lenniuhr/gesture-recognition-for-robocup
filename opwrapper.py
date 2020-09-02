@@ -37,7 +37,6 @@ def get_keypoints(image):
 
         opWrapper.emplaceAndPop([datum])
 
-        print(datum.poseKeypoints)
         if(datum.poseKeypoints.ndim == 0):
             print("No person found in image!")
             sys.exit(-1)
@@ -46,11 +45,6 @@ def get_keypoints(image):
             print("No person found in image!")
             sys.exit(-1)
         return datum
-
-        #body = convert_keypoints(datum.poseKeypoints[0])
-        #output_image = datum.cvOutputData
-
-        #return OpResult(datum.poseKeypoints, output_image)
 
     except Exception as e:
         print("Openpose Error: ")
