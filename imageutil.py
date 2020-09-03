@@ -10,13 +10,17 @@ SHOULDER_L = 5
 HIP_R = 9 
 HIP_L = 12
 
+# HSV color range for yellow
+LOWER_RANGE = np.array([20, 25, 25])
+UPPER_RANGE = np.array([24, 255, 255])
+
 
 class OpResult:
     def __init__(self, body, image):
         self.body = body
         self.image = image
 
-# convert keypoints two 2d array
+# convert keypoints to 2d array
 def convert_keypoints(keypoints):
     result = [];
     for e in keypoints:
@@ -27,11 +31,8 @@ def convert_keypoints(keypoints):
 
 def get_coach_keypoints(image):
 
-	# hsv range 20 - 24 is yellow
 	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-	lower_range = np.array([20, 25, 25])
-	upper_range = np.array([24, 255, 255])
-	mask = cv2.inRange(hsv, lower_range, upper_range)
+	mask = cv2.inRange(hsv, LOWER_RANGE, UPPER_RANGE)
 
 	coach_keypoints = None
 	max_yellow_percentage = 0
